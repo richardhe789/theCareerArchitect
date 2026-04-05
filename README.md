@@ -79,7 +79,8 @@ To add more scraping sources:
 - **Backend**: Deploy FastAPI on Render/Fly.io/Railway for full Playwright support.
 
 ### Vercel API (lightweight)
-This repo also includes a Vercel-compatible API entrypoint in `api/main.py` for simple deployments.
+This repo includes a Vercel-compatible API entrypoint in `api/main.py` for simple deployments.
+The `vercel.json` uses a versioned runtime (`@vercel/python@4.6.0`) to satisfy Vercel’s runtime validation.
 Note: Vercel serverless functions have limited support for Playwright. For reliable scraping, host the backend on Render/Fly.
 
 ## Troubleshooting
