@@ -1,10 +1,10 @@
 # Local Internship Dashboard
 
-A Python web application that combines a web scraper and a Streamlit UI to help you find and manage internship opportunities. The application uses Streamlit for the frontend and Playwright for the background scraping engine.
+A full-stack internship dashboard with a FastAPI backend and a Next.js frontend. The backend handles scraping and storage, while the frontend provides a modern UI.
 
 ## Features
 
-- Web-based dashboard to view internship listings
+- Next.js dashboard to view internship listings
 - Advanced filtering by job title, location, and match score
 - Direct scraping from high-signal sources like the SimplifyJobs GitHub repository
 - Local SQLite database for persistent storage
@@ -34,33 +34,36 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-## Usage
+## Usage (FastAPI + Next.js)
 
-1. Run the Streamlit application:
+### Backend (FastAPI)
 ```bash
-python -m streamlit run app.py
+cd backend
+pip install -r requirements.txt
+python -m playwright install chromium
+uvicorn main:app --reload --port 8000
 ```
 
-2. The dashboard will open in your default browser at `http://localhost:8501`
+### Frontend (Next.js)
+```bash
+cd nextjs-app
+npm install
+npm run dev
+```
 
-3. Use the interface to:
-   - Filter internships by job title (e.g., SWE, ML, AI)
-   - Filter by location
-   - Set minimum match score threshold
-   - Click "Run Scraper" to fetch new internship listings
+Open the dashboard at http://localhost:3000 (frontend) and ensure the API is running on http://localhost:8000.
 
 ## How It Works
 
-- The application scrapes internship data from the SimplifyJobs Summer2026-Internships GitHub repository
-- Data is stored in a local SQLite database (`internships.db`)
-- The dashboard displays all unique listings with filtering capabilities
-- The "Run Scraper" button fetches new data without closing the dashboard
-- Duplicate listings are prevented by checking unique URLs
+- The backend scrapes internship data from SimplifyJobs and company ATS APIs (Greenhouse/Lever).
+- Data is stored in a local SQLite database (`internships.db`).
+- The frontend queries the backend API to render listings and trigger scrapes.
+- Duplicate listings are prevented by checking unique URLs.
 
 ## Project Structure
 
-- `app.py`: Streamlit web application
-- `requirements.txt`: Python dependencies
+- `backend/`: FastAPI service + scraper + SQLite utilities
+- `nextjs-app/`: Next.js frontend
 - `internships.db`: SQLite database (created automatically)
 
 ## Customization
@@ -70,8 +73,13 @@ To add more scraping sources:
 2. Update the `run_scraper()` function to include your new scraping functions
 3. Adjust the database schema in `init_db()` if needed
 
+## Hosting Notes
+
+- **Frontend**: Deploy `nextjs-app` to Vercel (set `NEXT_PUBLIC_API_BASE_URL` to your backend URL).
+- **Backend**: Deploy FastAPI on Render/Fly.io/Railway (ensure Playwright browsers are installed).
+
 ## Troubleshooting
 
-- If you get a Playwright error, make sure to run `playwright install chromium`
-- If the app doesn't launch, ensure Streamlit is properly installed
-- Check the console output for any error messages during scraping
+- If you get a Playwright error, make sure to run `python -m playwright install chromium`.
+- If the frontend cannot reach the backend, check the API URL in `nextjs-app/.env.local`.
+- Check backend logs for scraping errors.
