@@ -5,12 +5,12 @@
       "use": "@vercel/next"
     },
     {
-      "src": "api/main.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/main.py" },
+    { "src": "/api/(.*)", "dest": "/api/index.py" },
     { "src": "/(.*)", "dest": "nextjs-app/$1" }
   ]
 }
