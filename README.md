@@ -93,3 +93,4 @@ Note: Vercel serverless functions have limited support for Playwright. For relia
 - If you get a Playwright error, make sure to run `python -m playwright install chromium`.
 - If the frontend cannot reach the backend, check the API URL in `nextjs-app/.env.local`.
 - Check backend logs for scraping errors.
+- On Vercel, SQLite writes are stored in `/tmp` and are ephemeral per deployment (no persistence between runs).

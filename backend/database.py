@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 from typing import Any, Iterable, Mapping, Optional
@@ -6,8 +7,14 @@ import pandas as pd
 from pandas.errors import DatabaseError
 
 
+def resolve_db_path(db_path: str) -> str:
+    if os.getenv("VERCEL"):
+        return os.path.join("/tmp", os.path.basename(db_path))
+    return db_path
+
+
 def init_db(db_path: str = "internships.db") -> None:
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(resolve_db_path(db_path))
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -30,7 +37,7 @@ def save_to_db(internships_data: Iterable[Mapping[str, Any]], db_path: str = "in
     if not internships_data:
         return 0
 
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(resolve_db_path(db_path))
     cursor = conn.cursor()
 
     inserted_count = 0
@@ -64,7 +71,7 @@ def save_to_db(internships_data: Iterable[Mapping[str, Any]], db_path: str = "in
 def fetch_from_db(
     filters: Optional[Mapping[str, Any]] = None, db_path: str = "internships.db"
 ) -> pd.DataFrame:
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(resolve_db_path(db_path))
     query = "SELECT * FROM internships ORDER BY date_posted DESC"
     try:
         df = pd.read_sql_query(query, conn)
