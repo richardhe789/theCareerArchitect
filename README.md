@@ -52,7 +52,7 @@ python -m uvicorn backend.main:app --reload --port 8000
 
 ### Frontend (Next.js)
 ```bash
-cd nextjs-app
+cd frontend/nextjs-app
 npm install
 npm run dev
 ```
@@ -69,7 +69,7 @@ Open the dashboard at http://localhost:3000 (frontend) and ensure the API is run
 ## Project Structure
 
 - `backend/`: FastAPI service + scraper + SQLite utilities
-- `nextjs-app/`: Next.js frontend
+- `frontend/nextjs-app/`: Next.js frontend
 - `internships.db`: SQLite database (created automatically)
 
 ## Customization
@@ -78,7 +78,7 @@ SimplifyJobs is fetched via the GitHub API. If you hit rate limits, set `GITHUB_
 
 ## Hosting Notes
 
-- **Frontend**: Deploy `nextjs-app` to Vercel (set `NEXT_PUBLIC_API_BASE_URL` to your backend URL).
+- **Frontend**: Deploy `frontend/nextjs-app` to Vercel (set `NEXT_PUBLIC_API_BASE_URL` to your backend URL).
 - **Backend**: Deploy FastAPI on Render/Fly.io/Railway for full Playwright support.
 
 ### Remote deployment checklist (Vercel)
@@ -97,6 +97,6 @@ Note: Vercel serverless functions have limited support for Playwright. For relia
 ## Troubleshooting
 
 - If you get a Playwright error, make sure to run `python -m playwright install chromium`.
-- If the frontend cannot reach the backend, check the API URL in `nextjs-app/.env.local`.
+- If the frontend cannot reach the backend, check the API URL in `frontend/nextjs-app/.env.local`.
 - Check backend logs for scraping errors.
 - On Vercel, SQLite writes are stored in `/tmp` and are ephemeral per deployment (no persistence between runs).
