@@ -12,9 +12,7 @@ type Job = {
   match_score: number;
 };
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
-  (typeof window === "undefined" ? "" : window.location.origin);
+const API_BASE_URL = "";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
