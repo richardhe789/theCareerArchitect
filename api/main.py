@@ -1,3 +1,5 @@
+from fastapi import FastAPI
+
 try:
     from backend.main import app
 except ModuleNotFoundError:
@@ -5,7 +7,11 @@ except ModuleNotFoundError:
     from pathlib import Path
 
     sys.path.append(str(Path(__file__).resolve().parents[1]))
-    from backend.main import app
+    try:
+        from backend.main import app
+    except ModuleNotFoundError:
+        app = FastAPI(title="Internship Finder API")
+
 
 handler = app
 

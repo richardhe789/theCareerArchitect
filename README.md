@@ -85,6 +85,7 @@ SimplifyJobs is fetched via the GitHub API. If you hit rate limits, set `GITHUB_
 This repo includes a Vercel-compatible API entrypoint in `api/main.py` for simple deployments.
 `python-dotenv` is included to avoid missing dotenv binary errors during Vercel builds.
 The root `vercel.json` declares explicit builds for the Next.js app and the Python function.
+`api/main.py` always exports a top-level `app` (and `handler`) so Vercel can detect the serverless function.
 Note: Vercel serverless functions have limited support for Playwright. For reliable scraping, host the backend on Render/Fly.
 
 ## Troubleshooting
