@@ -1,39 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-
-type Job = {
-  id?: number;
-  company: string;
-  role: string;
-  location: string;
-  url: string;
-  date_posted: string;
-  match_score: number;
-};
+import FiltersPanel from "@/components/dashboard/FiltersPanel";
+import Header from "@/components/dashboard/Header";
+import JobsTable from "@/components/dashboard/JobsTable";
+import ResumePanel from "@/components/dashboard/ResumePanel";
+import ResumePreviewCard from "@/components/dashboard/ResumePreviewCard";
+import StatusMessage from "@/components/dashboard/StatusMessage";
+import type { Job, ResumePreview } from "@/types/jobs";
 
 type ScoreResponse = {
   jobs: Job[];
   explanation: string;
-};
-
-type ResumePreview = {
-  characters: number;
-  preview: string;
-  name: string | null;
-  email: string | null;
-  phone: string | null;
-  linkedin: string | null;
-  github: string | null;
-  keywords: string[];
-  experience_titles: string[];
-  companies: string[];
-  date_ranges: string[];
-  education: string;
-  skills_section: string;
-  experience_section: string;
-  projects_section: string;
-  courses: string[];
 };
 
 const API_BASE_URL = "";
@@ -198,61 +176,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div>
-            <h1 className="text-2xl font-semibold">Local Internship Dashboard</h1>
-            <p className="text-sm text-slate-600">
-              Powered by SimplifyJobs + company ATS boards
-            </p>
-          </div>
-          <button
-            className="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800"
-            onClick={runScrape}
-          >
-            Run Scraper
-          </button>
-        </div>
-      </header>
+      <Header onRunScrape={runScrape} />
 
       <main className="mx-auto max-w-6xl px-6 py-6">
-        <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg md:grid-cols-3">
-          <div>
-            <label className="text-xs font-semibold uppercase text-slate-600">
-              Job Title
-            </label>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
-              placeholder="SWE, ML, AI"
-              value={jobTitle}
-              onChange={(event) => setJobTitle(event.target.value)}
-            />
-          </div>
-          <div>
-            <label className="text-xs font-semibold uppercase text-slate-600">
-              Location
-            </label>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
-              placeholder="Remote, NYC, etc."
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-            />
-          </div>
-          <div>
-            <label className="text-xs font-semibold uppercase text-slate-600">
-              Minimum Match Score: {minScore}
-            </label>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={minScore}
-              onChange={(event) => setMinScore(Number(event.target.value))}
-              className="mt-2 w-full"
-            />
-          </div>
-        </section>
+        <FiltersPanel
+          jobTitle={jobTitle}
+          location={location}
+          minScore={minScore}
+          onJobTitleChange={setJobTitle}
+          onLocationChange={setLocation}
+          onMinScoreChange={setMinScore}
+        />
 
         {scrapeStatus && (
           <p className="mt-4 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600">
@@ -260,211 +194,28 @@ export default function Home() {
           </p>
         )}
 
-        <section className="mt-4 grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg md:grid-cols-[1fr_auto]">
-          <div>
-            <label className="text-xs font-semibold uppercase text-slate-600">
-              Resume (PDF or DOCX)
-            </label>
-            <input
-              type="file"
-              accept=".pdf,.docx"
-              className="mt-1 w-full text-slate-700"
-              onChange={(event) => setResumeFile(event.target.files?.[0] ?? null)}
-            />
-            {resumeFile && (
-              <p className="mt-1 text-xs text-slate-500">Selected: {resumeFile.name}</p>
-            )}
-            <label className="mt-3 block text-xs font-semibold uppercase text-slate-600">
-              Results to Show
-            </label>
-            <select
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
-              value={resultLimit}
-              onChange={(event) => setResultLimit(Number(event.target.value))}
-            >
-              <option value={10}>Top 10</option>
-              <option value={15}>Top 15</option>
-              <option value={25}>Top 25</option>
-              <option value={50}>Top 50</option>
-              <option value={100}>Top 100</option>
-            </select>
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <button
-              className="rounded-lg border border-slate-300 px-4 py-2 text-slate-800 hover:bg-slate-100"
-              onClick={() => parseResume()}
-            >
-              Preview Resume
-            </button>
-            <button
-              className="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800"
-              onClick={() => scoreJobs()}
-            >
-              Score Jobs
-            </button>
-          </div>
-        </section>
+        <ResumePanel
+          resumeFile={resumeFile}
+          resultLimit={resultLimit}
+          onResumeChange={setResumeFile}
+          onResultLimitChange={setResultLimit}
+          onPreview={parseResume}
+          onScore={scoreJobs}
+        />
 
-        {previewStatus && (
-          <p className="mt-2 text-sm text-slate-600">{previewStatus}</p>
-        )}
+        {previewStatus && <StatusMessage text={previewStatus} />}
 
-        {resumePreview && (
-          <div className="mt-2 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-lg">
-            <p className="text-xs uppercase text-slate-500">Resume Preview</p>
-            <p className="mt-1 text-xs text-slate-500">
-              Characters parsed: {resumePreview.characters}
-            </p>
-            {(resumePreview.name || resumePreview.email || resumePreview.phone) && (
-              <div className="mt-2">
-                <p className="text-xs uppercase text-slate-500">Contact</p>
-                <p className="mt-1 text-sm">
-                  {resumePreview.name && <span>{resumePreview.name}</span>}
-                  {resumePreview.email && (
-                    <span className="ml-2">{resumePreview.email}</span>
-                  )}
-                  {resumePreview.phone && (
-                    <span className="ml-2">{resumePreview.phone}</span>
-                  )}
-                </p>
-              </div>
-            )}
-            {(resumePreview.linkedin || resumePreview.github) && (
-              <div className="mt-2">
-                <p className="text-xs uppercase text-slate-500">Profiles</p>
-                <p className="mt-1 text-sm">
-                  {resumePreview.linkedin && (
-                    <span className="mr-2">{resumePreview.linkedin}</span>
-                  )}
-                  {resumePreview.github && <span>{resumePreview.github}</span>}
-                </p>
-              </div>
-            )}
-            <p className="mt-2 whitespace-pre-wrap leading-relaxed">
-              {resumePreview.preview}
-            </p>
-            {resumePreview.keywords?.length > 0 && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Keywords</p>
-                <p className="mt-1 text-sm">{resumePreview.keywords.join(", ")}</p>
-              </div>
-            )}
-            {resumePreview.experience_titles?.length > 0 && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Experience Titles</p>
-                <p className="mt-1 text-sm">{resumePreview.experience_titles.join(", ")}</p>
-              </div>
-            )}
-            {resumePreview.companies?.length > 0 && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Companies</p>
-                <p className="mt-1 text-sm">{resumePreview.companies.join(", ")}</p>
-              </div>
-            )}
-            {resumePreview.date_ranges?.length > 0 && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Date Ranges</p>
-                <p className="mt-1 text-sm">{resumePreview.date_ranges.join(", ")}</p>
-              </div>
-            )}
-            {resumePreview.skills_section && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Skills Section</p>
-                <p className="mt-1 whitespace-pre-wrap text-sm">
-                  {resumePreview.skills_section}
-                </p>
-              </div>
-            )}
-            {resumePreview.experience_section && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Experience Section</p>
-                <p className="mt-1 whitespace-pre-wrap text-sm">
-                  {resumePreview.experience_section}
-                </p>
-              </div>
-            )}
-            {resumePreview.projects_section && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Projects Section</p>
-                <p className="mt-1 whitespace-pre-wrap text-sm">
-                  {resumePreview.projects_section}
-                </p>
-              </div>
-            )}
-            {resumePreview.courses?.length > 0 && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Relevant Courses</p>
-                <p className="mt-1 text-sm">{resumePreview.courses.join(", ")}</p>
-              </div>
-            )}
-            {resumePreview.education && (
-              <div className="mt-4">
-                <p className="text-xs uppercase text-slate-500">Education Section</p>
-                <p className="mt-1 whitespace-pre-wrap text-sm">
-                  {resumePreview.education}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+        {resumePreview && <ResumePreviewCard resumePreview={resumePreview} />}
 
-        {scoreStatus && (
-          <p className="mt-2 text-sm text-slate-600">{scoreStatus}</p>
-        )}
+        {scoreStatus && <StatusMessage text={scoreStatus} />}
 
         {!hasScored && (
-          <p className="mt-2 text-sm text-slate-600">
-            Upload a resume to compute match scores. Scores default to 0 until then.
-          </p>
+          <StatusMessage text="Upload a resume to compute match scores. Scores default to 0 until then." />
         )}
 
-        {hasScored && scoreExplanation && (
-          <p className="mt-2 text-sm text-slate-600">{scoreExplanation}</p>
-        )}
+        {hasScored && scoreExplanation && <StatusMessage text={scoreExplanation} />}
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-lg">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <h2 className="text-lg font-semibold">Internships</h2>
-            <span className="text-sm text-slate-600">
-              {loading ? "Loading..." : `${jobs.length} results`}
-            </span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-100 text-xs uppercase text-slate-600">
-                <tr>
-                  <th className="px-4 py-3">Company</th>
-                  <th className="px-4 py-3">Role</th>
-                  <th className="px-4 py-3">Location</th>
-                  <th className="px-4 py-3">Match Score</th>
-                  <th className="px-4 py-3">Date Posted</th>
-                  <th className="px-4 py-3">Apply</th>
-                </tr>
-              </thead>
-              <tbody>
-                {jobs.map((job) => (
-                  <tr key={`${job.company}-${job.url}`} className="border-t border-slate-200">
-                    <td className="px-4 py-3 font-medium">{job.company}</td>
-                    <td className="px-4 py-3">{job.role}</td>
-                    <td className="px-4 py-3">{job.location}</td>
-                    <td className="px-4 py-3">{job.match_score.toFixed(1)}</td>
-                    <td className="px-4 py-3">{job.date_posted}</td>
-                    <td className="px-4 py-3">
-                      <a
-                        className="rounded bg-slate-900 px-3 py-1 text-white hover:bg-slate-800"
-                        href={job.url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Apply
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+        <JobsTable jobs={jobs} loading={loading} />
       </main>
     </div>
   );
