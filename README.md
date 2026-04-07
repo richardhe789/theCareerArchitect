@@ -76,6 +76,43 @@ Open the dashboard at http://localhost:3000 (frontend) and ensure the API is run
 
 SimplifyJobs is fetched via the GitHub API. If you hit rate limits, set `GITHUB_TOKEN` in your environment.
 
+### UI Editing Guide (React + Tailwind)
+
+The frontend is built with **Next.js + React** and styled with **Tailwind CSS** utility classes. The UI is split into small, focused components so you can edit each section without digging through one giant file.
+
+**Where to edit UI components**
+
+- `frontend/nextjs-app/src/app/page.tsx` — page composition and data flow
+- `frontend/nextjs-app/src/components/dashboard/` — individual UI sections:
+  - `Header.tsx` (title + Run Scraper button)
+  - `FiltersPanel.tsx` (job title/location/score filters)
+  - `ResumePanel.tsx` (upload + score buttons)
+  - `ResumePreviewCard.tsx` (resume preview)
+  - `JobsTable.tsx` (results table)
+  - `StatusMessage.tsx` (helper/status text)
+
+**How styling works**
+
+UI styles are applied with Tailwind classes directly in JSX via `className`. Each class is a small rule:
+
+```tsx
+<div className="rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
+  ...
+</div>
+```
+
+- Colors: `bg-slate-50`, `text-slate-700`, `border-slate-200`
+- Spacing: `p-4`, `px-6`, `mt-2`, `gap-4`
+- Layout: `flex`, `grid`, `items-center`, `justify-between`
+- Typography: `text-sm`, `font-semibold`, `uppercase`
+
+**Quick edit workflow**
+
+1. Open the component file you want to change.
+2. Adjust the JSX structure (add/remove elements).
+3. Tweak Tailwind classes to change spacing, colors, or layout.
+4. Refresh the page (`npm run dev`) to see updates.
+
 ## Hosting Notes
 
 - **Frontend**: Deploy `frontend/nextjs-app` to Vercel (set `NEXT_PUBLIC_API_BASE_URL` to your backend URL).

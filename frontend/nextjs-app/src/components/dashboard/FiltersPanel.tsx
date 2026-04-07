@@ -15,6 +15,25 @@ export default function FiltersPanel({
   onLocationChange,
   onMinScoreChange,
 }: FiltersPanelProps) {
+  const locationSuggestions = [
+    "Remote",
+    "New York, NY",
+    "San Francisco, CA",
+    "Seattle, WA",
+    "Austin, TX",
+    "Boston, MA",
+    "Chicago, IL",
+    "Los Angeles, CA",
+    "Atlanta, GA",
+    "Raleigh, NC",
+    "Denver, CO",
+    "Portland, OR",
+    "Phoenix, AZ",
+    "Washington, DC",
+  ];
+
+  const locationDatalistId = "location-suggestions";
+
   return (
     <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg md:grid-cols-3">
       <div>
@@ -31,9 +50,15 @@ export default function FiltersPanel({
         <input
           className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
           placeholder="Remote, NYC, etc."
+          list={locationDatalistId}
           value={location}
           onChange={(event) => onLocationChange(event.target.value)}
         />
+        <datalist id={locationDatalistId}>
+          {locationSuggestions.map((suggestion) => (
+            <option key={suggestion} value={suggestion} />
+          ))}
+        </datalist>
       </div>
       <div>
         <label className="text-xs font-semibold uppercase text-slate-600">

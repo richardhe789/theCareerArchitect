@@ -28,13 +28,21 @@ export default function JobsTable({ jobs, loading }: JobsTableProps) {
           </thead>
           <tbody>
             {jobs.map((job) => (
-              <tr key={`${job.company}-${job.url}`} className="border-t border-slate-200">
-                <td className="px-4 py-3 font-medium">{job.company}</td>
-                <td className="px-4 py-3">{job.role}</td>
-                <td className="px-4 py-3">{job.location}</td>
-                <td className="px-4 py-3">{job.match_score.toFixed(1)}</td>
-                <td className="px-4 py-3">{job.date_posted}</td>
-                <td className="px-4 py-3">
+              <tr key={`${job.company}-${job.url}`} className="border-t border-slate-200 h-14">
+                <td className="px-4 py-3 font-medium align-middle">
+                  <span className="block max-w-[14rem] truncate">{job.company}</span>
+                </td>
+                <td className="px-4 py-3 align-middle">
+                  <span className="block max-w-[16rem] truncate">{job.role}</span>
+                </td>
+                <td className="px-4 py-3 align-middle">
+                  <span className="block max-w-[12rem] truncate">{job.location}</span>
+                </td>
+                <td className="px-4 py-3 align-middle">{job.match_score.toFixed(1)}</td>
+                <td className="px-4 py-3 align-middle">
+                  <span className="block max-w-[10rem] truncate">{job.date_posted}</span>
+                </td>
+                <td className="px-4 py-3 align-middle">
                   <a
                     className="rounded bg-slate-900 px-3 py-1 text-white hover:bg-slate-800"
                     href={job.url}
