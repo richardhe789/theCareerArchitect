@@ -40,6 +40,7 @@ const API_BASE_URL = "";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [scoredJobs, setScoredJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [scrapeStatus, setScrapeStatus] = useState<string | null>(null);
   const [jobTitle, setJobTitle] = useState("");
@@ -72,6 +73,7 @@ export default function Home() {
         match_score: 0,
       }));
       setJobs(withDefaultScores);
+      setScoredJobs(withDefaultScores);
       setHasScored(false);
       setScoreExplanation(null);
     } catch (error) {
@@ -127,7 +129,8 @@ export default function Home() {
         }
       );
       const data: ScoreResponse = await response.json();
-      setJobs(data.jobs);
+      setScoredJobs(data.jobs);
+      setJobs(data.jobs.filter((job) => job.match_score >= minScore));
       setScoreExplanation(data.explanation);
       setHasScored(true);
       setScoreStatus(`Showing top ${resultLimit} matches.`);
@@ -170,6 +173,13 @@ export default function Home() {
     runInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryParams]);
+
+  useEffect(() => {
+    if (!hasScored) {
+      return;
+    }
+    setJobs(scoredJobs.filter((job) => job.match_score >= minScore));
+  }, [minScore, scoredJobs, hasScored]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">

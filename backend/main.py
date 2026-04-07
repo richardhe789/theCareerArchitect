@@ -245,9 +245,21 @@ def _score_jobs(resume_text: str, jobs: Iterable[Mapping[str, Any]]) -> list[dic
     tfidf_matrix = vectorizer.fit_transform(corpus)
     similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
 
+    raw_scores = [float(score) for score in similarities]
+    if raw_scores:
+        min_score = min(raw_scores)
+        max_score = max(raw_scores)
+    else:
+        min_score = 0.0
+        max_score = 0.0
+
     scored_jobs: list[dict[str, Any]] = []
-    for job, similarity in zip(jobs, similarities, strict=False):
-        scored_jobs.append({**job, "match_score": round(float(similarity) * 100, 1)})
+    for job, similarity in zip(jobs, raw_scores, strict=False):
+        if max_score > min_score:
+            normalized = (similarity - min_score) / (max_score - min_score)
+        else:
+            normalized = 0.0
+        scored_jobs.append({**job, "match_score": round(normalized * 100, 1)})
 
     return sorted(scored_jobs, key=lambda item: item.get("match_score", 0.0), reverse=True)
 
@@ -319,10 +331,6 @@ async def score_jobs(
     resume_text = _extract_resume_text(file.filename or "", file_bytes)
     jobs = _list_jobs(job_title=job_title, location=location, min_match_score=None)
     scored_jobs = _score_jobs(resume_text, jobs)
-    if min_match_score is not None:
-        scored_jobs = [
-            job for job in scored_jobs if job.get("match_score", 0.0) >= float(min_match_score)
-        ]
 
     safe_limit = max(1, min(limit, len(scored_jobs)))
     top_jobs = scored_jobs[:safe_limit]
