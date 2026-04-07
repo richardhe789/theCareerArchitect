@@ -17,6 +17,11 @@ type ScoreResponse = {
   explanation: string;
 };
 
+type ResumePreview = {
+  characters: number;
+  preview: string;
+};
+
 const API_BASE_URL = "";
 
 export default function Home() {
@@ -32,6 +37,8 @@ export default function Home() {
   const [scoreStatus, setScoreStatus] = useState<string | null>(null);
   const [scoreExplanation, setScoreExplanation] = useState<string | null>(null);
   const [hasScored, setHasScored] = useState(false);
+  const [resumePreview, setResumePreview] = useState<ResumePreview | null>(null);
+  const [previewStatus, setPreviewStatus] = useState<string | null>(null);
 
   const queryParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -57,6 +64,30 @@ export default function Home() {
       console.error("Failed to load jobs", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const parseResume = async () => {
+    if (!resumeFile) {
+      setPreviewStatus("Please upload a resume first.");
+      return;
+    }
+
+    setPreviewStatus("Parsing resume...");
+    const formData = new FormData();
+    formData.append("file", resumeFile);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/resume/parse`, {
+        method: "POST",
+        body: formData,
+      });
+      const data: ResumePreview = await response.json();
+      setResumePreview(data);
+      setPreviewStatus("Resume parsed. Review the preview below.");
+    } catch (error) {
+      console.error("Failed to parse resume", error);
+      setPreviewStatus("Failed to parse resume. Check backend logs.");
     }
   };
 
@@ -218,7 +249,13 @@ export default function Home() {
               <option value={100}>Top 100</option>
             </select>
           </div>
-          <div className="flex items-end">
+          <div className="flex flex-col items-end gap-2">
+            <button
+              className="rounded border border-blue-600 px-4 py-2 text-blue-600 hover:bg-blue-50"
+              onClick={parseResume}
+            >
+              Preview Resume
+            </button>
             <button
               className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
               onClick={scoreJobs}
@@ -227,6 +264,22 @@ export default function Home() {
             </button>
           </div>
         </section>
+
+        {previewStatus && (
+          <p className="mt-2 text-sm text-slate-500">{previewStatus}</p>
+        )}
+
+        {resumePreview && (
+          <div className="mt-2 rounded border border-slate-200 bg-white p-4 text-sm text-slate-600">
+            <p className="text-xs uppercase text-slate-500">Resume Preview</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Characters parsed: {resumePreview.characters}
+            </p>
+            <p className="mt-2 whitespace-pre-wrap leading-relaxed">
+              {resumePreview.preview}
+            </p>
+          </div>
+        )}
 
         {scoreStatus && (
           <p className="mt-2 text-sm text-slate-500">{scoreStatus}</p>
