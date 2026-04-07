@@ -12,6 +12,11 @@ type Job = {
   match_score: number;
 };
 
+type ScoreResponse = {
+  jobs: Job[];
+  explanation: string;
+};
+
 const API_BASE_URL = "";
 
 export default function Home() {
@@ -21,9 +26,12 @@ export default function Home() {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [minScore, setMinScore] = useState(70);
+  const [resultLimit, setResultLimit] = useState(10);
   const hasAutoScraped = useRef(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [scoreStatus, setScoreStatus] = useState<string | null>(null);
+  const [scoreExplanation, setScoreExplanation] = useState<string | null>(null);
+  const [hasScored, setHasScored] = useState(false);
 
   const queryParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -38,7 +46,13 @@ export default function Home() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/jobs?${queryParams}`);
       const data = await response.json();
-      setJobs(data);
+      const withDefaultScores = (data as Job[]).map((job) => ({
+        ...job,
+        match_score: 0,
+      }));
+      setJobs(withDefaultScores);
+      setHasScored(false);
+      setScoreExplanation(null);
     } catch (error) {
       console.error("Failed to load jobs", error);
     } finally {
@@ -59,13 +73,18 @@ export default function Home() {
     formData.append("file", resumeFile);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/jobs/score?${queryParams}`, {
+      const response = await fetch(
+        `${API_BASE_URL}/api/jobs/score?${queryParams}&limit=${resultLimit}`,
+        {
         method: "POST",
         body: formData,
-      });
-      const data = await response.json();
-      setJobs(data);
-      setScoreStatus("Scores updated.");
+        }
+      );
+      const data: ScoreResponse = await response.json();
+      setJobs(data.jobs);
+      setScoreExplanation(data.explanation);
+      setHasScored(true);
+      setScoreStatus(`Showing top ${resultLimit} matches.`);
     } catch (error) {
       console.error("Failed to score jobs", error);
       setScoreStatus("Failed to score jobs. Check backend logs.");
@@ -184,6 +203,19 @@ export default function Home() {
             {resumeFile && (
               <p className="mt-1 text-xs text-slate-500">Selected: {resumeFile.name}</p>
             )}
+            <label className="mt-3 block text-xs font-semibold uppercase text-slate-500">
+              Results to Show
+            </label>
+            <select
+              className="mt-1 w-full rounded border border-slate-200 px-3 py-2"
+              value={resultLimit}
+              onChange={(event) => setResultLimit(Number(event.target.value))}
+            >
+              <option value={10}>Top 10</option>
+              <option value={25}>Top 25</option>
+              <option value={50}>Top 50</option>
+              <option value={100}>Top 100</option>
+            </select>
           </div>
           <div className="flex items-end">
             <button
@@ -197,6 +229,16 @@ export default function Home() {
 
         {scoreStatus && (
           <p className="mt-2 text-sm text-slate-500">{scoreStatus}</p>
+        )}
+
+        {!hasScored && (
+          <p className="mt-2 text-sm text-slate-500">
+            Upload a resume to compute match scores. Scores default to 0 until then.
+          </p>
+        )}
+
+        {hasScored && scoreExplanation && (
+          <p className="mt-2 text-sm text-slate-500">{scoreExplanation}</p>
         )}
 
         <section className="mt-6 rounded-lg border border-slate-200 bg-white shadow-sm">

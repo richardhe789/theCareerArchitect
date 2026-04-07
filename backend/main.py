@@ -122,7 +122,7 @@ def _score_jobs(resume_text: str, jobs: Iterable[Mapping[str, Any]]) -> list[dic
     for job, similarity in zip(jobs, similarities, strict=False):
         scored_jobs.append({**job, "match_score": round(float(similarity) * 100, 1)})
 
-    return scored_jobs
+    return sorted(scored_jobs, key=lambda item: item.get("match_score", 0.0), reverse=True)
 
 
 @app.get("/jobs")
@@ -161,6 +161,7 @@ async def score_jobs(
     job_title: Optional[str] = None,
     location: Optional[str] = None,
     min_match_score: Optional[float] = None,
+    limit: int = 10,
 ):
     file_bytes = await file.read()
     resume_text = _extract_resume_text(file.filename or "", file_bytes)
@@ -170,7 +171,16 @@ async def score_jobs(
         scored_jobs = [
             job for job in scored_jobs if job.get("match_score", 0.0) >= float(min_match_score)
         ]
-    return scored_jobs
+
+    safe_limit = max(1, min(limit, len(scored_jobs)))
+    top_jobs = scored_jobs[:safe_limit]
+    return {
+        "jobs": top_jobs,
+        "explanation": (
+            "Scores are computed as TF-IDF cosine similarity between the resume text and each job's "
+            "role/company/location text. Returned list is the top scoring roles."
+        ),
+    }
 
 
 async def _run_scrape():
