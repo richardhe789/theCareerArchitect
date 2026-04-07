@@ -4,6 +4,9 @@ uvicorn[standard]==0.30.6
 requests
 pandas==2.1.3
 beautifulsoup4
+pdfplumber
+python-docx
+scikit-learn
 types-requests
 types-beautifulsoup4
 types-python-dateutil

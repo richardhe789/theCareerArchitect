@@ -22,6 +22,8 @@ export default function Home() {
   const [location, setLocation] = useState("");
   const [minScore, setMinScore] = useState(70);
   const hasAutoScraped = useRef(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [scoreStatus, setScoreStatus] = useState<string | null>(null);
 
   const queryParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -39,6 +41,34 @@ export default function Home() {
       setJobs(data);
     } catch (error) {
       console.error("Failed to load jobs", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const scoreJobs = async () => {
+    if (!resumeFile) {
+      setScoreStatus("Please upload a resume first.");
+      return;
+    }
+
+    setLoading(true);
+    setScoreStatus("Scoring jobs against resume...");
+
+    const formData = new FormData();
+    formData.append("file", resumeFile);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/jobs/score?${queryParams}`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      setJobs(data);
+      setScoreStatus("Scores updated.");
+    } catch (error) {
+      console.error("Failed to score jobs", error);
+      setScoreStatus("Failed to score jobs. Check backend logs.");
     } finally {
       setLoading(false);
     }
@@ -138,6 +168,35 @@ export default function Home() {
           <p className="mt-4 rounded border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600">
             {scrapeStatus}
           </p>
+        )}
+
+        <section className="mt-4 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_auto]">
+          <div>
+            <label className="text-xs font-semibold uppercase text-slate-500">
+              Resume (PDF or DOCX)
+            </label>
+            <input
+              type="file"
+              accept=".pdf,.docx"
+              className="mt-1 w-full"
+              onChange={(event) => setResumeFile(event.target.files?.[0] ?? null)}
+            />
+            {resumeFile && (
+              <p className="mt-1 text-xs text-slate-500">Selected: {resumeFile.name}</p>
+            )}
+          </div>
+          <div className="flex items-end">
+            <button
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+              onClick={scoreJobs}
+            >
+              Score Jobs
+            </button>
+          </div>
+        </section>
+
+        {scoreStatus && (
+          <p className="mt-2 text-sm text-slate-500">{scoreStatus}</p>
         )}
 
         <section className="mt-6 rounded-lg border border-slate-200 bg-white shadow-sm">
