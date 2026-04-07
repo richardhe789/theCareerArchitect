@@ -20,6 +20,14 @@ type ScoreResponse = {
 type ResumePreview = {
   characters: number;
   preview: string;
+  keywords: string[];
+  experience_titles: string[];
+  companies: string[];
+  date_ranges: string[];
+  education: string;
+  skills_section: string;
+  experience_section: string;
+  projects_section: string;
 };
 
 const API_BASE_URL = "";
@@ -278,6 +286,62 @@ export default function Home() {
             <p className="mt-2 whitespace-pre-wrap leading-relaxed">
               {resumePreview.preview}
             </p>
+            {resumePreview.keywords?.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Keywords</p>
+                <p className="mt-1 text-sm">{resumePreview.keywords.join(", ")}</p>
+              </div>
+            )}
+            {resumePreview.experience_titles?.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Experience Titles</p>
+                <p className="mt-1 text-sm">{resumePreview.experience_titles.join(", ")}</p>
+              </div>
+            )}
+            {resumePreview.companies?.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Companies</p>
+                <p className="mt-1 text-sm">{resumePreview.companies.join(", ")}</p>
+              </div>
+            )}
+            {resumePreview.date_ranges?.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Date Ranges</p>
+                <p className="mt-1 text-sm">{resumePreview.date_ranges.join(", ")}</p>
+              </div>
+            )}
+            {resumePreview.skills_section && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Skills Section</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm">
+                  {resumePreview.skills_section}
+                </p>
+              </div>
+            )}
+            {resumePreview.experience_section && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Experience Section</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm">
+                  {resumePreview.experience_section}
+                </p>
+              </div>
+            )}
+            {resumePreview.projects_section && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Projects Section</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm">
+                  {resumePreview.projects_section}
+                </p>
+              </div>
+            )}
+            {resumePreview.education && (
+              <div className="mt-4">
+                <p className="text-xs uppercase text-slate-500">Education Section</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm">
+                  {resumePreview.education}
+                </p>
+              </div>
+            )}
           </div>
         )}
 

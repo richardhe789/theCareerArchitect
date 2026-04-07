@@ -3,7 +3,7 @@ import logging
 import re
 from typing import Any, Iterable, Mapping, Optional
 
-import pdfplumber  # type: ignore[import-not-found]
+import fitz  # type: ignore[import-not-found]
 from docx import Document  # type: ignore[import-not-found]
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -76,9 +76,11 @@ def _normalize_text(text: str) -> str:
 
 
 def _extract_text_from_pdf(file_bytes: bytes) -> str:
-    with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
-        pages = [page.extract_text() or "" for page in pdf.pages]
-    return "\n".join(pages)
+    text_chunks: list[str] = []
+    with fitz.open(stream=file_bytes, filetype="pdf") as doc:
+        for page in doc:
+            text_chunks.append(page.get_text("text") or "")
+    return "\n".join(text_chunks)
 
 
 def _extract_text_from_docx(file_bytes: bytes) -> str:
@@ -93,6 +95,93 @@ def _extract_resume_text(filename: str, file_bytes: bytes) -> str:
     if extension == "docx":
         return _extract_text_from_docx(file_bytes)
     raise HTTPException(status_code=400, detail="Unsupported resume format. Use PDF or DOCX.")
+
+
+def _split_sections(text: str) -> dict[str, str]:
+    section_headers = {
+        "skills": ["skills", "technical skills", "technologies"],
+        "experience": ["experience", "work experience", "employment"],
+        "education": ["education", "academic"],
+        "projects": ["projects", "project experience"],
+    }
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    sections: dict[str, list[str]] = {key: [] for key in section_headers}
+    current_section: Optional[str] = None
+
+    for line in lines:
+        normalized = line.lower().strip(":")
+        matched_section = None
+        for key, headers in section_headers.items():
+            if normalized in headers:
+                matched_section = key
+                break
+        if matched_section:
+            current_section = matched_section
+            continue
+        if current_section:
+            sections[current_section].append(line)
+
+    return {key: "\n".join(value) for key, value in sections.items() if value}
+
+
+def _extract_keywords(text: str, max_keywords: int = 20) -> list[str]:
+    tokens = re.findall(r"[a-zA-Z][a-zA-Z0-9+.#-]{1,}", text.lower())
+    stopwords = {
+        "the",
+        "and",
+        "for",
+        "with",
+        "that",
+        "this",
+        "from",
+        "are",
+        "was",
+        "were",
+        "you",
+        "your",
+        "but",
+        "not",
+        "have",
+        "has",
+        "had",
+        "use",
+        "using",
+        "used",
+        "experience",
+        "project",
+        "skills",
+    }
+    freq: dict[str, int] = {}
+    for token in tokens:
+        if token in stopwords:
+            continue
+        freq[token] = freq.get(token, 0) + 1
+    sorted_tokens = sorted(freq.items(), key=lambda item: item[1], reverse=True)
+    return [token for token, _ in sorted_tokens[:max_keywords]]
+
+
+def _extract_date_ranges(text: str) -> list[str]:
+    date_pattern = re.compile(
+        r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{4}\s*[–-]\s*(?:Present|Current|\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{4})",
+        re.IGNORECASE,
+    )
+    return date_pattern.findall(text)
+
+
+def _extract_experience_titles(text: str) -> list[str]:
+    title_pattern = re.compile(
+        r"\b(Intern|Engineer|Developer|Analyst|Researcher|Scientist|Manager|Lead|Architect)[a-zA-Z ]{0,40}",
+        re.IGNORECASE,
+    )
+    titles = [match.strip() for match in title_pattern.findall(text)]
+    return sorted(set(titles))
+
+
+def _extract_companies(text: str) -> list[str]:
+    company_pattern = re.compile(r"\b[A-Z][A-Za-z0-9&\.\- ]{2,}\b")
+    candidates = [match.strip() for match in company_pattern.findall(text)]
+    filtered = [c for c in candidates if len(c.split()) <= 4]
+    return list(dict.fromkeys(filtered))[:20]
 
 
 def _score_jobs(resume_text: str, jobs: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -148,9 +237,22 @@ def api_list_jobs(
 async def parse_resume(file: UploadFile = File(...)):
     file_bytes = await file.read()
     resume_text = _extract_resume_text(file.filename or "", file_bytes)
+    sections = _split_sections(resume_text)
+    keywords = _extract_keywords(resume_text)
+    date_ranges = _extract_date_ranges(resume_text)
+    experience_titles = _extract_experience_titles(resume_text)
+    companies = _extract_companies(resume_text)
     return {
         "characters": len(resume_text),
         "preview": resume_text[:500],
+        "keywords": keywords,
+        "experience_titles": experience_titles,
+        "companies": companies,
+        "date_ranges": date_ranges,
+        "education": sections.get("education", ""),
+        "skills_section": sections.get("skills", ""),
+        "experience_section": sections.get("experience", ""),
+        "projects_section": sections.get("projects", ""),
     }
 
 
