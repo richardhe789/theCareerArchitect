@@ -99,6 +99,7 @@ export default function Home() {
       const data: ResumePreview = await response.json();
       setResumePreview(data);
       setPreviewStatus("Resume parsed. Review the preview below.");
+      await scoreJobs();
     } catch (error) {
       console.error("Failed to parse resume", error);
       setPreviewStatus("Failed to parse resume. Check backend logs.");
