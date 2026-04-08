@@ -2,14 +2,27 @@ import type { ResumePreview } from "@/types/jobs";
 
 type ResumePreviewCardProps = {
   resumePreview: ResumePreview;
+  onClose: () => void;
 };
 
-export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardProps) {
+export default function ResumePreviewCard({
+  resumePreview,
+  onClose,
+}: ResumePreviewCardProps) {
   return (
     <div className="editorial-panel text-sm text-[var(--ink-700)]">
       <div className="flex items-center justify-between">
         <p className="section-title">Resume Preview</p>
-        <span className="data-chip">{resumePreview.characters} chars</span>
+        <div className="flex items-center gap-2">
+          <span className="data-chip">{resumePreview.characters} chars</span>
+          <button
+            className="pill-button"
+            type="button"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
       </div>
       {(resumePreview.name || resumePreview.email || resumePreview.phone) && (
         <div className="mt-4">

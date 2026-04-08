@@ -180,8 +180,8 @@ export default function Home() {
         <Header onRunScrape={runScrape} />
 
         <main className="mx-auto max-w-6xl px-6 py-12">
-          <section className="mx-auto flex max-w-5xl flex-col gap-6 text-center lg:flex-col lg:items-center">
-            <div className="max-w-2xl">
+          <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+            <div className="max-w-2xl text-left">
               <span className="eyebrow stagger-fade">Resume Intelligence</span>
               <h1 className="headline-display stagger-fade delay-1">
                 Architect the internship search that reads like a headline.
@@ -196,7 +196,7 @@ export default function Home() {
                 <span className="data-chip">Threshold {minScore}%+</span>
               </div>
             </div>
-            <div className="glass-card mx-auto max-w-sm stagger-fade delay-3">
+            <div className="glass-card max-w-sm justify-self-end stagger-fade delay-3">
               <p className="section-title">Live Status</p>
               <p className="mt-3 text-sm text-[var(--ink-500)]">
                 {scrapeStatus ?? "Awaiting scrape. Launch to refresh boards."}
@@ -204,12 +204,6 @@ export default function Home() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <button className="cta-button primary" onClick={runScrape}>
                   Refresh Listings
-                </button>
-                <button
-                  className="cta-button secondary"
-                  onClick={() => parseResume()}
-                >
-                  Scan Resume
                 </button>
               </div>
             </div>
@@ -227,7 +221,15 @@ export default function Home() {
 
             {previewStatus && <StatusMessage text={previewStatus} />}
 
-            {resumePreview && <ResumePreviewCard resumePreview={resumePreview} />}
+            {resumePreview && (
+              <ResumePreviewCard
+                resumePreview={resumePreview}
+                onClose={() => {
+                  setResumePreview(null);
+                  setPreviewStatus(null);
+                }}
+              />
+            )}
 
             {scoreStatus && <StatusMessage text={scoreStatus} />}
 
@@ -239,14 +241,26 @@ export default function Home() {
               <StatusMessage text={scoreExplanation} />
             )}
 
-            <FiltersPanel
-              jobTitle={jobTitle}
-              location={location}
-              minScore={minScore}
-              onJobTitleChange={setJobTitle}
-              onLocationChange={setLocation}
-              onMinScoreChange={setMinScore}
-            />
+            <div className="grid gap-6 lg:grid-cols-[0.6fr_0.4fr]">
+              <FiltersPanel
+                jobTitle={jobTitle}
+                location={location}
+                minScore={minScore}
+                onJobTitleChange={setJobTitle}
+                onLocationChange={setLocation}
+                onMinScoreChange={setMinScore}
+              />
+
+              <div className="glass-card flex flex-col justify-center gap-3 text-left">
+                <p className="section-title">Signal Summary</p>
+                <p className="text-sm text-[var(--ink-500)]">
+                  {jobs.length} listings live · threshold at {minScore}% · top {resultLimit}
+                </p>
+                <button className="cta-button secondary" onClick={runScrape}>
+                  Update Feed
+                </button>
+              </div>
+            </div>
 
             <JobsTable jobs={jobs} loading={loading} />
           </div>
