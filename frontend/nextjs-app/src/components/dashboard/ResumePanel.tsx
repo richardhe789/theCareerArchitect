@@ -37,9 +37,6 @@ export default function ResumePanel({
   return (
     <section className="space-y-6">
       <div className="rounded-3xl border-2 border-dashed border-[rgba(27,77,255,0.3)] bg-white/70 p-8 text-center shadow-[0_20px_60px_rgba(15,17,21,0.12)]">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--paper-200)] text-[var(--accent-500)]">
-            <span className="upload-icon">☁️</span>
-          </div>
           <h3 className="text-xl font-semibold text-[var(--ink-900)]">
             Upload your resume
           </h3>
