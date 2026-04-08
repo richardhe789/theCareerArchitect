@@ -180,7 +180,7 @@ export default function Home() {
         <Header onRunScrape={runScrape} />
 
         <main className="mx-auto max-w-6xl px-6 py-12">
-          <section className="mx-auto flex max-w-5xl flex-col gap-6 text-center lg:text-left lg:flex-row lg:items-end lg:justify-between">
+          <section className="mx-auto flex max-w-5xl flex-col gap-6 text-center lg:flex-col lg:items-center">
             <div className="max-w-2xl">
               <span className="eyebrow stagger-fade">Resume Intelligence</span>
               <h1 className="headline-display stagger-fade delay-1">
@@ -196,7 +196,7 @@ export default function Home() {
                 <span className="data-chip">Threshold {minScore}%+</span>
               </div>
             </div>
-            <div className="glass-card mx-auto max-w-sm stagger-fade delay-3 lg:mx-0">
+            <div className="glass-card mx-auto max-w-sm stagger-fade delay-3">
               <p className="section-title">Live Status</p>
               <p className="mt-3 text-sm text-[var(--ink-500)]">
                 {scrapeStatus ?? "Awaiting scrape. Launch to refresh boards."}
@@ -215,44 +215,40 @@ export default function Home() {
             </div>
           </section>
 
-          <div className="mx-auto mt-10 grid max-w-5xl gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
-            <div className="space-y-6">
-              <FiltersPanel
-                jobTitle={jobTitle}
-                location={location}
-                minScore={minScore}
-                onJobTitleChange={setJobTitle}
-                onLocationChange={setLocation}
-                onMinScoreChange={setMinScore}
-              />
+          <div className="mx-auto mt-10 grid max-w-5xl gap-6">
+            <ResumePanel
+              resumeFile={resumeFile}
+              resultLimit={resultLimit}
+              onResumeChange={setResumeFile}
+              onResultLimitChange={setResultLimit}
+              onPreview={parseResume}
+              onScore={scoreJobs}
+            />
 
-              <JobsTable jobs={jobs} loading={loading} />
-            </div>
+            {previewStatus && <StatusMessage text={previewStatus} />}
 
-            <aside className="space-y-6">
-              <ResumePanel
-                resumeFile={resumeFile}
-                resultLimit={resultLimit}
-                onResumeChange={setResumeFile}
-                onResultLimitChange={setResultLimit}
-                onPreview={parseResume}
-                onScore={scoreJobs}
-              />
+            {resumePreview && <ResumePreviewCard resumePreview={resumePreview} />}
 
-              {previewStatus && <StatusMessage text={previewStatus} />}
+            {scoreStatus && <StatusMessage text={scoreStatus} />}
 
-              {resumePreview && <ResumePreviewCard resumePreview={resumePreview} />}
+            {!hasScored && (
+              <StatusMessage text="Upload a resume to compute match scores. Scores default to 0 until then." />
+            )}
 
-              {scoreStatus && <StatusMessage text={scoreStatus} />}
+            {hasScored && scoreExplanation && (
+              <StatusMessage text={scoreExplanation} />
+            )}
 
-              {!hasScored && (
-                <StatusMessage text="Upload a resume to compute match scores. Scores default to 0 until then." />
-              )}
+            <FiltersPanel
+              jobTitle={jobTitle}
+              location={location}
+              minScore={minScore}
+              onJobTitleChange={setJobTitle}
+              onLocationChange={setLocation}
+              onMinScoreChange={setMinScore}
+            />
 
-              {hasScored && scoreExplanation && (
-                <StatusMessage text={scoreExplanation} />
-              )}
-            </aside>
+            <JobsTable jobs={jobs} loading={loading} />
           </div>
         </main>
       </div>

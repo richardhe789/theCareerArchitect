@@ -35,8 +35,8 @@ export default function FiltersPanel({
   const locationDatalistId = "location-suggestions";
 
   return (
-    <section className="editorial-panel">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <section className="editorial-panel text-center">
+      <div className="flex flex-col items-center gap-3">
         <div>
           <p className="section-title">Filter Stack</p>
           <p className="mt-1 text-sm text-[var(--ink-500)]">

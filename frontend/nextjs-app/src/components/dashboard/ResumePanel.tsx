@@ -36,8 +36,7 @@ export default function ResumePanel({
 
   return (
     <section className="space-y-6">
-      <div className="rounded-3xl border-2 border-dashed border-[rgba(27,77,255,0.3)] bg-white/70 p-8 shadow-[0_20px_60px_rgba(15,17,21,0.12)]">
-        <div className="text-center">
+      <div className="rounded-3xl border-2 border-dashed border-[rgba(27,77,255,0.3)] bg-white/70 p-8 text-center shadow-[0_20px_60px_rgba(15,17,21,0.12)]">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--paper-200)] text-[var(--accent-500)]">
             <span className="upload-icon">☁️</span>
           </div>
@@ -48,39 +47,35 @@ export default function ResumePanel({
             Drag and drop your PDF or DOCX here. We’ll extract skills and score
             them instantly.
           </p>
-          <label className="mt-6 inline-flex cursor-pointer items-center justify-center rounded-full bg-[var(--paper-200)] px-6 py-3 text-sm font-semibold text-[var(--ink-900)] transition hover:bg-[var(--paper-300)]">
-            Select File
-            <input
-              type="file"
-              accept=".pdf,.docx"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={(event) =>
-                handleResumeSelect(event.target.files?.[0] ?? null)
-              }
-            />
-          </label>
+          <button className="cta-button secondary" onClick={handleScanResume}>
+            Scan Resume
+          </button>
+          <input
+            type="file"
+            accept=".pdf,.docx"
+            className="hidden"
+            ref={fileInputRef}
+            onChange={(event) =>
+              handleResumeSelect(event.target.files?.[0] ?? null)
+            }
+          />
           {resumeFile && (
             <p className="mt-3 text-xs text-[var(--ink-300)]">
               Selected: {resumeFile.name}
             </p>
           )}
-        </div>
       </div>
 
       <div className="glass-card">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="section-title">Resume Console</p>
-            <p className="mt-2 text-sm text-[var(--ink-500)]">
-              Feed the scoring engine and generate a curated shortlist.
-            </p>
-          </div>
-          <span className="data-chip">Live scan</span>
+        <div className="text-center">
+          <p className="section-title">Results to Show</p>
+          <p className="mt-2 text-sm text-[var(--ink-500)]">
+            Limit the shortlist length once scoring completes.
+          </p>
         </div>
         <div className="mt-6 space-y-4">
           <div className="input-shell">
-            <label className="input-label">Results to Show</label>
+            <label className="input-label">Match Limit</label>
             <select
               className="select-field"
               value={resultLimit}
@@ -93,17 +88,9 @@ export default function ResumePanel({
               <option value={100}>Top 100</option>
             </select>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <button
-              className="cta-button secondary"
-              onClick={handleScanResume}
-            >
-              Scan Resume
-            </button>
-            <button className="cta-button primary" onClick={() => onScore()}>
-              Score Jobs
-            </button>
-          </div>
+          <button className="cta-button primary" onClick={() => onScore()}>
+            Score Jobs
+          </button>
         </div>
       </div>
     </section>
