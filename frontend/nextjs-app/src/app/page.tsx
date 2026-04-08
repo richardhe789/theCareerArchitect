@@ -175,48 +175,87 @@ export default function Home() {
   }, [resumeFile]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <Header onRunScrape={runScrape} />
+    <div className="editorial-shell">
+      <div className="editorial-content">
+        <Header onRunScrape={runScrape} />
 
-      <main className="mx-auto max-w-6xl px-6 py-6">
-        <FiltersPanel
-          jobTitle={jobTitle}
-          location={location}
-          minScore={minScore}
-          onJobTitleChange={setJobTitle}
-          onLocationChange={setLocation}
-          onMinScoreChange={setMinScore}
-        />
+        <main className="mx-auto max-w-6xl px-6 py-12">
+          <section className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <span className="eyebrow stagger-fade">Resume Intelligence</span>
+              <h1 className="headline-display stagger-fade delay-1">
+                Architect the internship search that reads like a headline.
+              </h1>
+              <p className="lede stagger-fade delay-2">
+                Upload once, scan fast. The dashboard triangulates your resume,
+                internship supply, and match scores into an editorial-grade brief.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <span className="data-chip">Auto-scan ATS boards</span>
+                <span className="data-chip">Score the top {resultLimit}</span>
+                <span className="data-chip">Threshold {minScore}%+</span>
+              </div>
+            </div>
+            <div className="glass-card max-w-sm stagger-fade delay-3">
+              <p className="section-title">Live Status</p>
+              <p className="mt-3 text-sm text-[var(--ink-500)]">
+                {scrapeStatus ?? "Awaiting scrape. Launch to refresh boards."}
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button className="cta-button primary" onClick={runScrape}>
+                  Refresh Listings
+                </button>
+                <button
+                  className="cta-button secondary"
+                  onClick={() => parseResume()}
+                >
+                  Scan Resume
+                </button>
+              </div>
+            </div>
+          </section>
 
-        {scrapeStatus && (
-          <p className="mt-4 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600">
-            {scrapeStatus}
-          </p>
-        )}
+          <div className="mt-10 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="space-y-6">
+              <FiltersPanel
+                jobTitle={jobTitle}
+                location={location}
+                minScore={minScore}
+                onJobTitleChange={setJobTitle}
+                onLocationChange={setLocation}
+                onMinScoreChange={setMinScore}
+              />
 
-        <ResumePanel
-          resumeFile={resumeFile}
-          resultLimit={resultLimit}
-          onResumeChange={setResumeFile}
-          onResultLimitChange={setResultLimit}
-          onPreview={parseResume}
-          onScore={scoreJobs}
-        />
+              <JobsTable jobs={jobs} loading={loading} />
+            </div>
 
-        {previewStatus && <StatusMessage text={previewStatus} />}
+            <aside className="space-y-6">
+              <ResumePanel
+                resumeFile={resumeFile}
+                resultLimit={resultLimit}
+                onResumeChange={setResumeFile}
+                onResultLimitChange={setResultLimit}
+                onPreview={parseResume}
+                onScore={scoreJobs}
+              />
 
-        {resumePreview && <ResumePreviewCard resumePreview={resumePreview} />}
+              {previewStatus && <StatusMessage text={previewStatus} />}
 
-        {scoreStatus && <StatusMessage text={scoreStatus} />}
+              {resumePreview && <ResumePreviewCard resumePreview={resumePreview} />}
 
-        {!hasScored && (
-          <StatusMessage text="Upload a resume to compute match scores. Scores default to 0 until then." />
-        )}
+              {scoreStatus && <StatusMessage text={scoreStatus} />}
 
-        {hasScored && scoreExplanation && <StatusMessage text={scoreExplanation} />}
+              {!hasScored && (
+                <StatusMessage text="Upload a resume to compute match scores. Scores default to 0 until then." />
+              )}
 
-        <JobsTable jobs={jobs} loading={loading} />
-      </main>
+              {hasScored && scoreExplanation && (
+                <StatusMessage text={scoreExplanation} />
+              )}
+            </aside>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

@@ -6,14 +6,14 @@ type ResumePreviewCardProps = {
 
 export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardProps) {
   return (
-    <div className="mt-2 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-lg">
-      <p className="text-xs uppercase text-slate-500">Resume Preview</p>
-      <p className="mt-1 text-xs text-slate-500">
-        Characters parsed: {resumePreview.characters}
-      </p>
+    <div className="editorial-panel text-sm text-[var(--ink-700)]">
+      <div className="flex items-center justify-between">
+        <p className="section-title">Resume Preview</p>
+        <span className="data-chip">{resumePreview.characters} chars</span>
+      </div>
       {(resumePreview.name || resumePreview.email || resumePreview.phone) && (
-        <div className="mt-2">
-          <p className="text-xs uppercase text-slate-500">Contact</p>
+        <div className="mt-4">
+          <p className="section-title">Contact</p>
           <p className="mt-1 text-sm">
             {resumePreview.name && <span>{resumePreview.name}</span>}
             {resumePreview.email && <span className="ml-2">{resumePreview.email}</span>}
@@ -22,8 +22,8 @@ export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardPr
         </div>
       )}
       {(resumePreview.linkedin || resumePreview.github) && (
-        <div className="mt-2">
-          <p className="text-xs uppercase text-slate-500">Profiles</p>
+        <div className="mt-4">
+          <p className="section-title">Profiles</p>
           <p className="mt-1 text-sm">
             {resumePreview.linkedin && (
               <span className="mr-2">{resumePreview.linkedin}</span>
@@ -32,36 +32,36 @@ export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardPr
           </p>
         </div>
       )}
-      <p className="mt-2 whitespace-pre-wrap leading-relaxed">
+      <p className="mt-4 whitespace-pre-wrap leading-relaxed">
         {resumePreview.preview}
       </p>
       {resumePreview.keywords?.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Keywords</p>
+          <p className="section-title">Keywords</p>
           <p className="mt-1 text-sm">{resumePreview.keywords.join(", ")}</p>
         </div>
       )}
       {resumePreview.experience_titles?.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Experience Titles</p>
+          <p className="section-title">Experience Titles</p>
           <p className="mt-1 text-sm">{resumePreview.experience_titles.join(", ")}</p>
         </div>
       )}
       {resumePreview.companies?.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Companies</p>
+          <p className="section-title">Companies</p>
           <p className="mt-1 text-sm">{resumePreview.companies.join(", ")}</p>
         </div>
       )}
       {resumePreview.date_ranges?.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Date Ranges</p>
+          <p className="section-title">Date Ranges</p>
           <p className="mt-1 text-sm">{resumePreview.date_ranges.join(", ")}</p>
         </div>
       )}
       {resumePreview.skills_section && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Skills Section</p>
+          <p className="section-title">Skills Section</p>
           <p className="mt-1 whitespace-pre-wrap text-sm">
             {resumePreview.skills_section}
           </p>
@@ -69,7 +69,7 @@ export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardPr
       )}
       {resumePreview.experience_section && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Experience Section</p>
+          <p className="section-title">Experience Section</p>
           <p className="mt-1 whitespace-pre-wrap text-sm">
             {resumePreview.experience_section}
           </p>
@@ -77,7 +77,7 @@ export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardPr
       )}
       {resumePreview.projects_section && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Projects Section</p>
+          <p className="section-title">Projects Section</p>
           <p className="mt-1 whitespace-pre-wrap text-sm">
             {resumePreview.projects_section}
           </p>
@@ -85,13 +85,13 @@ export default function ResumePreviewCard({ resumePreview }: ResumePreviewCardPr
       )}
       {resumePreview.courses?.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Relevant Courses</p>
+          <p className="section-title">Relevant Courses</p>
           <p className="mt-1 text-sm">{resumePreview.courses.join(", ")}</p>
         </div>
       )}
       {resumePreview.education && (
         <div className="mt-4">
-          <p className="text-xs uppercase text-slate-500">Education Section</p>
+          <p className="section-title">Education Section</p>
           <p className="mt-1 whitespace-pre-wrap text-sm">{resumePreview.education}</p>
         </div>
       )}

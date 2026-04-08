@@ -4,20 +4,23 @@ type HeaderProps = {
 
 export default function Header({ onRunScrape }: HeaderProps) {
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <header className="border-b border-[rgba(15,17,21,0.08)] bg-[rgba(244,242,238,0.6)] backdrop-blur">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
         <div>
-          <h1 className="text-2xl font-semibold">Local Internship Dashboard</h1>
-          <p className="text-sm text-slate-600">
-            Powered by SimplifyJobs + company ATS boards
+          <p className="section-title">The Career Architect</p>
+          <h1 className="mt-1 text-2xl font-semibold text-[var(--ink-900)]">
+            Local Internship Intelligence
+          </h1>
+          <p className="text-sm text-[var(--ink-500)]">
+            Powered by SimplifyJobs, ATS boards, and resume scoring.
           </p>
         </div>
-        <button
-          className="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800"
-          onClick={onRunScrape}
-        >
-          Run Scraper
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button className="cta-button secondary" onClick={onRunScrape}>
+            Run Scraper
+          </button>
+          <button className="cta-button primary">Brief Preview</button>
+        </div>
       </div>
     </header>
   );

@@ -3,5 +3,5 @@ type StatusMessageProps = {
 };
 
 export default function StatusMessage({ text }: StatusMessageProps) {
-  return <p className="mt-2 text-sm text-slate-600">{text}</p>;
+  return <p className="status-text">{text}</p>;
 }
