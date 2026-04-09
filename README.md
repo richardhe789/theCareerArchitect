@@ -37,6 +37,16 @@ python -m playwright install chromium
 
 ## Usage (FastAPI + Next.js)
 
+### Frontend (Next.js)
+The Next.js app lives in `frontend/nextjs-app` (there is no `package.json` at the repo root), so run the dev server from that folder:
+```bash
+cd frontend/nextjs-app
+npm install
+npm run dev
+```
+
+Open the dashboard at http://localhost:3000.
+
 ### Backend (FastAPI)
 ```bash
 cd backend
@@ -50,14 +60,7 @@ If you run uvicorn from the repo root instead, use:
 python -m uvicorn backend.main:app --reload --port 8000
 ```
 
-### Frontend (Next.js)
-```bash
-cd frontend/nextjs-app
-npm install
-npm run dev
-```
-
-Open the dashboard at http://localhost:3000 (frontend) and ensure the API is running on http://localhost:8000.
+Ensure the API is running on http://localhost:8000 so the frontend can fetch data.
 
 ## How It Works
 

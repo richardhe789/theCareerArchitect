@@ -14,6 +14,7 @@ const manrope = Manrope({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+
 export const metadata: Metadata = {
   title: "Local Internship Dashboard",
   description: "Internship dashboard powered by SimplifyJobs and company ATS boards",
@@ -29,12 +30,6 @@ export default function RootLayout({
       lang="en"
       className={`light ${inter.variable} ${manrope.variable}`}
     >
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        />
-      </head>
       <body>{children}</body>
     </html>
   );
