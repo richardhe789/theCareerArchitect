@@ -46,15 +46,8 @@ export default function Home() {
   const [showPreview, setShowPreview] = useState(false);
   const [previewStatus, setPreviewStatus] = useState<string | null>(null);
 
-  const stepNumber = useMemo(() => {
-    if (activeTab === "sync") return 3;
-    if (activeTab === "matches") return 2;
-    return 1;
-  }, [activeTab]);
-  const stepProgress = useMemo(
-    () => `${Math.round((stepNumber / 3) * 100)}%`,
-    [stepNumber]
-  );
+  const stepNumber = activeTab === "sync" ? 3 : activeTab === "matches" ? 2 : 1;
+  const stepProgress = stepNumber / 3;
 
   const queryParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -304,8 +297,8 @@ export default function Home() {
             <span>Step {stepNumber} of 3</span>
             <div className="h-2 w-[200px] overflow-hidden rounded-full bg-surface-container">
               <div
-                className="h-full bg-gradient-to-r from-tertiary-fixed-dim to-on-tertiary-container shadow-[0_0_12px_rgba(0,170,161,0.3)]"
-                style={{ width: stepProgress }}
+                className="h-full w-full origin-left bg-gradient-to-r from-tertiary-fixed-dim to-on-tertiary-container shadow-[0_0_12px_rgba(0,170,161,0.3)] transition-transform duration-300"
+                style={{ transform: `scaleX(${stepProgress})` }}
               />
             </div>
           </div>
@@ -421,7 +414,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className="group rounded-[20px] bg-gradient-to-br from-primary to-primary-container p-8 text-on-primary shadow-card">
+              <div className="group rounded-[20px] bg-primary p-8 text-on-primary shadow-card">
                 <h3 className="mb-2 text-[1.2rem] font-bold">Curator Insights</h3>
                 <p className="mb-6 max-w-[22rem] text-[0.9rem] text-[#bdc2ff]">
                   Users who upload a detailed resume see a 40% increase in high-quality
