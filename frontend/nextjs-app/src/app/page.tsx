@@ -263,8 +263,8 @@ export default function Home() {
   }, [resumeFile]);
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface">
-      <nav className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between bg-white/80 px-8 shadow-[0_8px_24px_rgba(15,17,21,0.06)] backdrop-blur-[16px]">
+    <div className="min-h-screen overflow-x-hidden bg-surface text-on-surface">
+      <nav className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between bg-white/80 px-6 shadow-[0_8px_24px_rgba(15,17,21,0.06)] backdrop-blur-[16px]">
         <div className="font-display text-[1.1rem] font-extrabold italic tracking-[-0.02em] text-[#1b2a6b]">
           The Career Architect
         </div>
@@ -316,7 +316,7 @@ export default function Home() {
         </div>
       </aside>
 
-      <main className="ml-0 w-full max-w-none px-6 pb-8 pt-20 max-[1200px]:ml-0 md:px-10 md:pb-12 md:pt-24 xl:ml-64 xl:pr-10">
+      <main className="ml-0 w-full max-w-[1100px] px-4 pb-8 pt-20 max-[1200px]:ml-0 md:px-8 md:pb-12 md:pt-24 xl:ml-64">
         <header className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between max-[768px]:items-start">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary-fixed px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-on-primary-fixed">
@@ -344,7 +344,7 @@ export default function Home() {
         </header>
 
         {activeTab === "build" ? (
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)] max-[1200px]:grid-cols-1">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] max-[1200px]:grid-cols-1">
             <section className="flex flex-col gap-8">
               <ResumePanel
                 resumeFile={resumeFile}
@@ -461,7 +461,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
             </aside>
           </div>
         ) : activeTab === "matches" ? (

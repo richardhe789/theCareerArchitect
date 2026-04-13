@@ -17,8 +17,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Local Internship Dashboard",
-  description: "Internship dashboard powered by SimplifyJobs and company ATS boards",
+  title: "The Career Architect",
+  description: "The Career Architect internship dashboard powered by SimplifyJobs",
 };
 
 export default function RootLayout({
