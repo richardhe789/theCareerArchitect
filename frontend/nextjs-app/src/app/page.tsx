@@ -263,8 +263,8 @@ export default function Home() {
   }, [resumeFile]);
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface">
-      <nav className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between bg-white/80 px-8 shadow-[0_8px_24px_rgba(15,17,21,0.06)] backdrop-blur-[16px]">
+    <div className="min-h-screen overflow-x-hidden bg-surface text-on-surface">
+      <nav className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between bg-white/80 px-6 shadow-[0_8px_24px_rgba(15,17,21,0.06)] backdrop-blur-[16px]">
         <div className="font-display text-[1.1rem] font-extrabold italic tracking-[-0.02em] text-[#1b2a6b]">
           The Career Architect
         </div>
@@ -316,7 +316,7 @@ export default function Home() {
         </div>
       </aside>
 
-      <main className="ml-0 w-full max-w-[1100px] px-6 pb-8 pt-20 max-[1200px]:ml-0 md:px-12 md:pb-12 md:pt-24 xl:ml-64">
+      <main className="ml-0 w-full max-w-[1100px] px-4 pb-8 pt-20 max-[1200px]:ml-0 md:px-8 md:pb-12 md:pt-24 xl:ml-64">
         <header className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between max-[768px]:items-start">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary-fixed px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-on-primary-fixed">
@@ -460,34 +460,6 @@ export default function Home() {
                     )}
                   </div>
                 </div>
-              </div>
-
-              <div className="rounded-[20px] bg-surface-container-low p-8 shadow-card">
-                <h3 className="mb-6 flex items-center gap-2 text-[1.05rem] font-bold">
-                  <span className="material-symbols-outlined text-tertiary">psychology</span>
-                  Career Interests
-                </h3>
-                <label className="mb-3 block text-[0.85rem] font-semibold text-on-surface-variant">
-                  What is your ideal career trajectory?
-                </label>
-                <textarea
-                  className="min-h-[120px] w-full resize-y rounded-2xl border-none bg-surface-container-high p-4 text-[0.95rem] text-on-surface focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the roles, industries, and impact you want to have in your next position..."
-                />
-              </div>
-
-              <div className="group rounded-[20px] bg-primary p-8 text-on-primary shadow-card">
-                <h3 className="mb-2 text-[1.2rem] font-bold">Curator Insights</h3>
-                <p className="mb-6 max-w-[22rem] text-[0.9rem] text-[#bdc2ff]">
-                  Users who upload a detailed resume see a 40% increase in high-quality
-                  matches during their first week.
-                </p>
-                <img
-                  className="h-[140px] w-full rounded-[14px] object-cover opacity-40 grayscale transition duration-[400ms] group-hover:opacity-60 group-hover:grayscale-0"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTTv-3iEb3vBgFMDXgdabvdOeJX2UP0wlGmT-ipv1WzahnCgiw6-fP7KyJRSFcrYYNrICm-JpjD1_Cdx9Ot3frFXL0lHm1rrKxurdqdCZm6Ic2sNmofo9crtch_TqdGVkjOa5Zd0H8Enhyog1dmwACOPLyX4UE1Xl3zO2NxZ56Tp5HAVO0u_C63093vWljvV6VaSEBK5vBz08e3ff3q86MHEpxKPTsYrmmIWiEcltw3tk54c9Grwt7mEkN6-U-CDF45yqP3zkfB38"
-                  alt="modern office environment with soft focus desk setup and warm cinematic lighting showing professional focus"
-                />
-                <div className="absolute bottom-[-20px] right-[-20px] h-[130px] w-[130px] rounded-full bg-white/10 blur-[24px]" />
               </div>
             </aside>
           </div>
